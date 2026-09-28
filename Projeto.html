@@ -1,0 +1,5105 @@
+<!DOCTYPE html>
+
+
+
+<html lang="pt-BR">
+
+
+
+
+
+
+
+<head>
+
+
+
+    <meta charset="UTF-8">
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="style.css">
+
+
+
+
+
+
+
+    <title>Projeto</title>
+
+
+
+</head>
+
+
+
+
+
+
+
+<body>
+
+
+
+
+
+
+
+    <header class="cabecalho-projetos">
+
+
+
+
+
+
+
+        <a href="SeusProjetos.html" class="voltar">
+
+
+
+            ← Voltar
+
+
+
+        </a>
+
+
+
+
+
+
+
+        <h1 id="tituloProjeto">
+
+
+
+            Projeto
+
+
+
+        </h1>
+
+
+
+
+
+
+
+        <button id="adicionarImagem">
+
+
+
+            + Adicionar imagem
+
+
+
+        </button>
+
+
+
+
+
+
+
+        <input
+
+
+
+            type="file"
+
+
+
+            id="seletorImagem"
+
+
+
+            accept="image/*"
+
+
+
+            hidden
+
+
+
+        >
+
+
+
+
+
+
+
+    </header>
+
+
+
+
+
+
+
+
+
+
+
+    <main
+
+
+
+        class="imagens-projeto"
+
+
+
+        id="imagensProjeto">
+
+
+
+    </main>
+
+
+
+
+
+
+
+
+
+
+
+    <div
+
+
+
+        id="janelaImagem"
+
+
+
+        class="janela-imagem">
+
+
+
+
+
+
+
+        <span
+
+
+
+            id="fecharImagem"
+
+
+
+            class="fechar-imagem">
+
+
+
+            ×
+
+
+
+        </span>
+
+
+
+
+
+
+
+        <img id="imagemAmpliada">
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div id="janelaProjetos" class="janela-projetos">
+
+
+
+        <div class="caixa-projetos">
+
+
+
+            <button id="fecharProjetos" class="fechar-projetos">×</button>
+
+
+
+            <h2 id="tituloJanelaProjetos">Escolha um projeto</h2>
+
+
+
+            <div id="listaProjetos" class="lista-projetos"></div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <script>
+
+
+
+
+
+
+
+        const parametros =
+
+
+
+            new URLSearchParams(
+
+
+
+                window.location.search
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+        const idProjeto =
+
+
+
+            parametros.get("id");
+
+
+
+
+
+
+
+
+
+
+
+        const projetos =
+
+
+
+            JSON.parse(
+
+
+
+                localStorage.getItem("projetos")
+
+
+
+            ) || [];
+
+
+
+
+
+
+
+
+
+
+
+        const projeto =
+
+
+
+            projetos.find(
+
+
+
+                function(item) {
+
+
+
+
+
+
+
+                    return item.id === idProjeto;
+
+
+
+
+
+
+
+                }
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+        if (!projeto) {
+
+
+
+
+
+
+
+            alert(
+
+
+
+                "Projeto não encontrado."
+
+
+
+            );
+
+
+
+
+
+
+
+            window.location.href =
+
+
+
+                "SeusProjetos.html";
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+        document.getElementById(
+
+
+
+            "tituloProjeto"
+
+
+
+        ).textContent =
+
+
+
+            projeto.nome;
+
+
+
+
+
+
+
+
+
+
+
+        let imagensProjetos =
+
+
+
+            JSON.parse(
+
+
+
+                localStorage.getItem(
+
+
+
+                    "imagensProjetos"
+
+
+
+                )
+
+
+
+            ) || {};
+
+
+
+
+
+
+
+
+
+
+
+        if (!imagensProjetos[idProjeto]) {
+
+
+
+
+
+
+
+            imagensProjetos[idProjeto] = [];
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+        const areaImagens =
+
+
+
+            document.getElementById(
+
+
+
+                "imagensProjeto"
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+        const botaoAdicionar =
+
+
+
+            document.getElementById(
+
+
+
+                "adicionarImagem"
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+        const seletorImagem =
+
+
+
+            document.getElementById(
+
+
+
+                "seletorImagem"
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+        const janelaImagem =
+
+
+
+            document.getElementById(
+
+
+
+                "janelaImagem"
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+        const imagemAmpliada =
+
+
+
+            document.getElementById(
+
+
+
+                "imagemAmpliada"
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+        const fecharImagem =
+
+
+
+            document.getElementById(
+
+
+
+                "fecharImagem"
+
+
+
+            );
+
+
+
+
+
+        const janelaProjetos =
+
+
+
+            document.getElementById("janelaProjetos");
+
+
+
+
+
+        const listaProjetos =
+
+
+
+            document.getElementById("listaProjetos");
+
+
+
+
+
+        const tituloJanelaProjetos =
+
+
+
+            document.getElementById("tituloJanelaProjetos");
+
+
+
+
+
+        const fecharProjetos =
+
+
+
+            document.getElementById("fecharProjetos");
+
+
+
+
+
+        let imagemSelecionada = null;
+
+
+
+        let indiceImagemSelecionada = null;
+
+
+
+        let tipoAcao = null;
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            Guarda o índice da imagem
+
+
+
+            que está sendo arrastada.
+
+
+
+        */
+
+
+
+        let indiceArrastado = null;
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            Guarda o elemento que está
+
+
+
+            sendo mostrado como destino.
+
+
+
+        */
+
+
+
+        let destinoAtual = null;
+
+
+
+
+
+
+
+
+
+
+
+        function mostrarImagens() {
+
+
+
+
+
+
+
+            areaImagens.innerHTML = "";
+
+
+
+
+
+
+
+
+
+
+
+            imagensProjetos[idProjeto].forEach(
+
+
+
+
+
+
+
+
+
+                function(
+
+
+
+                    caminhoImagem,
+
+
+
+                    indice
+
+
+
+                ) {
+
+
+
+
+
+
+
+                    const recipiente =
+
+
+
+                        document.createElement(
+
+
+
+                            "div"
+
+
+
+                        );
+
+
+
+
+
+
+
+
+
+
+
+                    recipiente.classList.add(
+
+
+
+                        "recipiente-imagem"
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    recipiente.draggable =
+
+
+
+                        true;
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        Imagem
+
+
+
+                    */
+
+
+
+                    const novaImagem =
+
+
+
+                        document.createElement(
+
+
+
+                            "img"
+
+
+
+                        );
+
+
+
+
+
+
+
+
+
+
+
+                    novaImagem.src =
+
+
+
+                        caminhoImagem;
+
+
+
+
+
+
+
+
+
+
+
+                    novaImagem.classList.add(
+
+
+
+                        "imagem-projeto"
+
+
+
+                    );
+
+
+
+
+
+                    /*
+
+
+
+                        Botões rápidos
+
+
+
+                    */
+
+
+
+                    const botoesImagem =
+
+
+
+                        document.createElement(
+
+
+
+                            "div"
+
+
+
+                        );
+
+
+
+
+
+                    botoesImagem.classList.add(
+
+
+
+                        "botoes-imagem"
+
+
+
+                    );
+
+
+
+
+
+                    /*
+
+
+
+                        Botão Salvar
+
+
+
+                    */
+
+
+
+                    const botaoSalvar =
+
+
+
+                        document.createElement(
+
+
+
+                            "button"
+
+
+
+                        );
+
+
+
+
+
+                    botaoSalvar.textContent =
+
+
+
+                        "💾 Salvar";
+
+
+
+
+
+                    botaoSalvar.classList.add(
+
+
+
+                        "botao-salvar"
+
+
+
+                    );
+
+
+
+
+
+                    botaoSalvar.addEventListener(
+
+
+
+                        "click",
+
+
+
+                        function(evento) {
+
+
+
+
+
+                            evento.stopPropagation();
+
+
+
+
+
+                            imagemSelecionada =
+
+
+
+                                caminhoImagem;
+
+
+
+                            indiceImagemSelecionada =
+
+
+
+                                indice;
+
+
+
+
+
+                            tipoAcao =
+
+
+
+                                "salvar";
+
+
+
+
+
+                            abrirJanelaProjetos();
+
+
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+                    /*
+
+
+
+                        Botão Mover
+
+
+
+                    */
+
+
+
+                    const botaoMover =
+
+
+
+                        document.createElement(
+
+
+
+                            "button"
+
+
+
+                        );
+
+
+
+
+
+                    botaoMover.textContent =
+
+
+
+                        "📁 Mover";
+
+
+
+
+
+                    botaoMover.classList.add(
+
+
+
+                        "botao-mover"
+
+
+
+                    );
+
+
+
+
+
+                    botaoMover.addEventListener(
+
+
+
+                        "click",
+
+
+
+                        function(evento) {
+
+
+
+
+
+                            evento.stopPropagation();
+
+
+
+
+
+                            imagemSelecionada =
+
+
+
+                                caminhoImagem;
+
+
+
+                            indiceImagemSelecionada =
+
+
+
+                                indice;
+
+
+
+
+
+                            tipoAcao =
+
+
+
+                                "mover";
+
+
+
+
+
+                            abrirJanelaProjetos();
+
+
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+                    botoesImagem.appendChild(
+
+
+
+                        botaoSalvar
+
+
+
+                    );
+
+
+
+
+
+                    botoesImagem.appendChild(
+
+
+
+                        botaoMover
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    novaImagem.addEventListener(
+
+
+
+                        "click",
+
+
+
+                        function() {
+
+
+
+
+
+
+
+                            imagemAmpliada.src =
+
+
+
+                                caminhoImagem;
+
+
+
+
+
+
+
+                            janelaImagem.classList.add(
+
+
+
+                                "aberta"
+
+
+
+                            );
+
+
+
+
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        Botão de opções
+
+
+
+                    */
+
+
+
+                    const botaoOpcoes =
+
+
+
+                        document.createElement(
+
+
+
+                            "button"
+
+
+
+                        );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoOpcoes.textContent =
+
+
+
+                        "⋮";
+
+
+
+
+
+
+
+
+
+
+
+                    botaoOpcoes.classList.add(
+
+
+
+                        "botao-opcoes"
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        Menu
+
+
+
+                    */
+
+
+
+                    const menu =
+
+
+
+                        document.createElement(
+
+
+
+                            "div"
+
+
+
+                        );
+
+
+
+
+
+
+
+
+
+
+
+                    menu.classList.add(
+
+
+
+                        "menu-imagem"
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        Botão de capa
+
+
+
+                    */
+
+
+
+                    const botaoCapa =
+
+
+
+                        document.createElement(
+
+
+
+                            "button"
+
+
+
+                        );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoCapa.textContent =
+
+
+
+                        "Definir como capa";
+
+
+
+
+
+
+
+
+
+
+
+                    botaoCapa.classList.add(
+
+
+
+                        "botao-capa"
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoCapa.addEventListener(
+
+
+
+                        "click",
+
+
+
+                        function(evento) {
+
+
+
+
+
+
+
+                            evento.stopPropagation();
+
+
+
+
+
+
+
+
+
+
+
+                            projeto.capa =
+
+
+
+                                caminhoImagem;
+
+
+
+
+
+
+
+
+
+
+
+                            localStorage.setItem(
+
+
+
+                                "projetos",
+
+
+
+                                JSON.stringify(
+
+
+
+                                    projetos
+
+
+
+                                )
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            menu.classList.remove(
+
+
+
+                                "aberto"
+
+
+
+                            );
+
+
+
+
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        Botão excluir
+
+
+
+                    */
+
+
+
+                    const botaoExcluir =
+
+
+
+                        document.createElement(
+
+
+
+                            "button"
+
+
+
+                        );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoExcluir.textContent =
+
+
+
+                        "Excluir";
+
+
+
+
+
+
+
+
+
+
+
+                    botaoExcluir.classList.add(
+
+
+
+                        "botao-excluir"
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoOpcoes.addEventListener(
+
+
+
+                        "click",
+
+
+
+                        function(evento) {
+
+
+
+
+
+
+
+                            evento.stopPropagation();
+
+
+
+
+
+
+
+
+
+
+
+                            menu.classList.toggle(
+
+
+
+                                "aberto"
+
+
+
+                            );
+
+
+
+
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoExcluir.addEventListener(
+
+
+
+                        "click",
+
+
+
+                        function(evento) {
+
+
+
+
+
+
+
+                            evento.stopPropagation();
+
+
+
+
+
+
+
+
+
+
+
+                            if (
+
+
+
+                                projeto.capa ===
+
+
+
+                                caminhoImagem
+
+
+
+                            ) {
+
+
+
+
+
+
+
+                                projeto.capa =
+
+
+
+                                    null;
+
+
+
+
+
+
+
+
+
+
+
+                                localStorage.setItem(
+
+
+
+                                    "projetos",
+
+
+
+                                    JSON.stringify(
+
+
+
+                                        projetos
+
+
+
+                                    )
+
+
+
+                                );
+
+
+
+
+
+
+
+                            }
+
+
+
+
+
+
+
+
+
+
+
+                            imagensProjetos[
+
+
+
+                                idProjeto
+
+
+
+                            ].splice(
+
+
+
+                                indice,
+
+
+
+                                1
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            localStorage.setItem(
+
+
+
+                                "imagensProjetos",
+
+
+
+                                JSON.stringify(
+
+
+
+                                    imagensProjetos
+
+
+
+                                )
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            mostrarImagens();
+
+
+
+
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    menu.appendChild(
+
+
+
+                        botaoCapa
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    menu.appendChild(
+
+
+
+                        botaoExcluir
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    recipiente.appendChild(
+
+
+
+                        novaImagem
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    recipiente.appendChild(
+
+
+
+                        botoesImagem
+
+
+
+                    );
+
+
+
+
+
+                    recipiente.appendChild(
+
+
+
+                        botaoOpcoes
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    recipiente.appendChild(
+
+
+
+                        menu
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        =================================
+
+
+
+                        COMEÇO DO ARRASTE
+
+
+
+                        =================================
+
+
+
+                    */
+
+
+
+
+
+
+
+                    recipiente.addEventListener(
+
+
+
+                        "dragstart",
+
+
+
+                        function(evento) {
+
+
+
+
+
+
+
+                            indiceArrastado =
+
+
+
+                                indice;
+
+
+
+
+
+
+
+
+
+
+
+                            evento.dataTransfer.effectAllowed =
+
+
+
+                                "move";
+
+
+
+
+
+
+
+
+
+
+
+                            evento.dataTransfer.setData(
+
+
+
+                                "text/plain",
+
+
+
+                                indice
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            recipiente.classList.add(
+
+
+
+                                "arrastando"
+
+
+
+                            );
+
+
+
+
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        =================================
+
+
+
+                        TERMINOU O ARRASTE
+
+
+
+                        =================================
+
+
+
+                    */
+
+
+
+
+
+
+
+                    recipiente.addEventListener(
+
+
+
+                        "dragend",
+
+
+
+                        function() {
+
+
+
+
+
+
+
+                            recipiente.classList.remove(
+
+
+
+                                "arrastando"
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            if (destinoAtual) {
+
+
+
+
+
+
+
+                                destinoAtual.classList.remove(
+
+
+
+                                    "destino-arraste"
+
+
+
+                                );
+
+
+
+
+
+
+
+                            }
+
+
+
+
+
+
+
+                            destinoAtual =
+
+
+
+                                null;
+
+
+
+
+
+
+
+                            indiceArrastado =
+                                null;
+                                                        }
+
+
+
+                    );
+
+
+
+
+
+                    areaImagens.appendChild(
+
+
+
+                        recipiente
+
+
+
+                    );
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+            );
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            =================================
+
+
+
+            MOVIMENTO DURANTE O ARRASTE
+
+
+
+            =================================
+
+
+
+        */
+
+
+
+
+
+
+
+        areaImagens.addEventListener(
+
+
+
+            "dragover",
+
+
+
+            function(evento) {
+
+
+
+
+
+
+
+                evento.preventDefault();
+
+
+
+
+
+
+
+
+
+
+
+                if (
+
+
+
+                    indiceArrastado === null
+
+
+
+                ) {
+
+
+
+
+
+
+
+                    return;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Pega todos os recipientes
+
+
+
+                    de imagem.
+
+
+
+                */
+
+
+
+                const recipientes =
+
+
+
+                    Array.from(
+
+
+
+                        areaImagens.querySelectorAll(
+
+
+
+                            ".recipiente-imagem"
+
+
+
+                        )
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Remove o destaque anterior.
+
+
+
+                */
+
+
+
+                recipientes.forEach(
+
+
+
+                    function(recipiente) {
+
+
+
+
+
+
+
+                        recipiente.classList.remove(
+
+
+
+                            "destino-arraste"
+
+
+
+                        );
+
+
+
+
+
+
+
+                    }
+
+
+
+                );
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Descobre qual imagem
+
+
+
+                    está mais próxima
+
+
+
+                    do mouse.
+
+
+
+                */
+
+
+
+                let imagemMaisProxima =
+
+
+
+                    null;
+
+
+
+
+
+
+
+
+
+
+
+                let menorDistancia =
+
+
+
+                    Infinity;
+
+
+
+
+
+
+
+
+
+
+
+                recipientes.forEach(
+
+
+
+                    function(recipiente) {
+
+
+
+
+
+
+
+                        const indice =
+
+
+
+                            recipientes.indexOf(
+
+
+
+                                recipiente
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                        /*
+
+
+
+                            Não usa a própria imagem
+
+
+
+                            que está sendo arrastada.
+
+
+
+                        */
+
+
+
+                        if (
+
+
+
+                            indice ===
+
+
+
+                            indiceArrastado
+
+
+
+                        ) {
+
+
+
+
+
+
+
+                            return;
+
+
+
+
+
+
+
+                        }
+
+
+
+
+
+
+
+
+
+
+
+                        const retangulo =
+
+
+
+                            recipiente.getBoundingClientRect();
+
+
+
+
+
+
+
+
+
+
+
+                        const centroX =
+
+
+
+                            retangulo.left +
+
+
+
+                            retangulo.width / 2;
+
+
+
+
+
+
+
+
+
+
+
+                        const centroY =
+
+
+
+                            retangulo.top +
+
+
+
+                            retangulo.height / 2;
+
+
+
+
+
+
+
+
+
+
+
+                        const distanciaX =
+
+
+
+                            evento.clientX -
+
+
+
+                            centroX;
+
+
+
+
+
+
+
+
+
+
+
+                        const distanciaY =
+
+
+
+                            evento.clientY -
+
+
+
+                            centroY;
+
+
+
+
+
+
+
+
+
+
+
+                        const distancia =
+
+
+
+                            Math.sqrt(
+
+
+
+                                distanciaX *
+
+
+
+                                distanciaX +
+
+
+
+                                distanciaY *
+
+
+
+                                distanciaY
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                        if (
+
+
+
+                            distancia <
+
+
+
+                            menorDistancia
+
+
+
+                        ) {
+
+
+
+
+
+
+
+                            menorDistancia =
+
+
+
+                                distancia;
+
+
+
+
+
+
+
+
+
+
+
+                            imagemMaisProxima =
+
+
+
+                                recipiente;
+
+
+
+
+
+
+
+                        }
+
+
+
+
+
+
+
+                    }
+
+
+
+                );
+
+
+
+
+
+
+
+
+
+
+
+                if (
+
+
+
+                    imagemMaisProxima
+
+
+
+                ) {
+
+
+
+
+
+
+
+                    imagemMaisProxima.classList.add(
+
+
+
+                        "destino-arraste"
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    destinoAtual =
+
+
+
+                        imagemMaisProxima;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            =================================
+
+
+
+            SOLTAR NO MAIN
+
+
+
+            =================================
+
+
+
+        */
+
+
+
+
+
+
+
+        areaImagens.addEventListener(
+
+
+
+            "drop",
+
+
+
+            function(evento) {
+
+
+
+
+
+
+
+                evento.preventDefault();
+
+
+
+
+
+
+
+
+
+
+
+                if (
+
+
+
+                    indiceArrastado === null
+
+
+
+                ) {
+
+
+
+
+
+
+
+                    return;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+                const recipientes =
+
+
+
+                    Array.from(
+
+
+
+                        areaImagens.querySelectorAll(
+
+
+
+                            ".recipiente-imagem"
+
+
+
+                        )
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Descobre novamente qual
+
+
+
+                    imagem está mais próxima
+
+
+
+                    do cursor.
+
+
+
+                */
+
+
+
+                let recipienteDestino =
+
+
+
+                    null;
+
+
+
+
+
+
+
+
+
+
+
+                let menorDistancia =
+
+
+
+                    Infinity;
+
+
+
+
+
+
+
+
+
+
+
+                recipientes.forEach(
+
+
+
+                    function(recipiente) {
+
+
+
+
+
+
+
+                        const indice =
+
+
+
+                            recipientes.indexOf(
+
+
+
+                                recipiente
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                        if (
+
+
+
+                            indice ===
+
+
+
+                            indiceArrastado
+
+
+
+                        ) {
+
+
+
+
+
+
+
+                            return;
+
+
+
+
+
+
+
+                        }
+
+
+
+
+
+
+
+
+
+
+
+                        const retangulo =
+
+
+
+                            recipiente.getBoundingClientRect();
+
+
+
+
+
+
+
+
+
+
+
+                        const centroX =
+
+
+
+                            retangulo.left +
+
+
+
+                            retangulo.width / 2;
+
+
+
+
+
+
+
+
+
+
+
+                        const centroY =
+
+
+
+                            retangulo.top +
+
+
+
+                            retangulo.height / 2;
+
+
+
+
+
+
+
+
+
+
+
+                        const distanciaX =
+
+
+
+                            evento.clientX -
+
+
+
+                            centroX;
+
+
+
+
+
+
+
+
+
+
+
+                        const distanciaY =
+
+
+
+                            evento.clientY -
+
+
+
+                            centroY;
+
+
+
+
+
+
+
+
+
+
+
+                        const distancia =
+
+
+
+                            Math.sqrt(
+
+
+
+                                distanciaX *
+
+
+
+                                distanciaX +
+
+
+
+                                distanciaY *
+
+
+
+                                distanciaY
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                        if (
+
+
+
+                            distancia <
+
+
+
+                            menorDistancia
+
+
+
+                        ) {
+
+
+
+
+
+
+
+                            menorDistancia =
+
+
+
+                                distancia;
+
+
+
+
+
+
+
+
+
+
+
+                            recipienteDestino =
+
+
+
+                                recipiente;
+
+
+
+
+
+
+
+                        }
+
+
+
+
+
+
+
+                    }
+
+
+
+                );
+
+
+
+
+
+
+
+
+
+
+
+                if (
+
+
+
+                    !recipienteDestino
+
+
+
+                ) {
+
+
+
+
+
+
+
+                    return;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+                const indiceDestino =
+
+
+
+                    recipientes.indexOf(
+
+
+
+                        recipienteDestino
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Descobre se soltou na
+
+
+
+                    metade esquerda ou direita.
+
+
+
+                */
+
+
+
+                const retangulo =
+
+
+
+                    recipienteDestino.getBoundingClientRect();
+
+
+
+
+
+
+
+
+
+
+
+                const soltouDepois =
+
+
+
+                    evento.clientX >
+
+
+
+                    retangulo.left +
+
+
+
+                    retangulo.width / 2;
+
+
+
+
+
+
+
+
+
+
+
+                let novaPosicao =
+
+
+
+                    indiceDestino;
+
+
+
+
+
+
+
+
+
+
+
+                if (soltouDepois) {
+
+
+
+
+
+
+
+                    novaPosicao =
+
+
+
+                        indiceDestino + 1;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Retira a imagem original.
+
+
+
+                */
+
+
+
+                const imagemMovida =
+
+
+
+                    imagensProjetos[
+
+
+
+                        idProjeto
+
+
+
+                    ].splice(
+
+
+
+                        indiceArrastado,
+
+
+
+                        1
+
+
+
+                    )[0];
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Corrige a posição porque
+
+
+
+                    uma imagem foi retirada.
+
+
+
+                */
+
+
+
+                if (
+
+
+
+                    indiceArrastado <
+
+
+
+                    novaPosicao
+
+
+
+                ) {
+
+
+
+
+
+
+
+                    novaPosicao--;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Coloca a imagem na
+
+
+
+                    nova posição.
+
+
+
+                */
+
+
+
+                imagensProjetos[
+
+
+
+                    idProjeto
+
+
+
+                ].splice(
+
+
+
+                    novaPosicao,
+
+
+
+                    0,
+
+
+
+                    imagemMovida
+
+
+
+                );
+
+
+
+
+
+
+
+
+
+
+
+                /*
+
+
+
+                    Salva a nova ordem.
+
+
+
+                */
+
+
+
+                localStorage.setItem(
+
+
+
+                    "imagensProjetos",
+
+
+
+                    JSON.stringify(
+
+
+
+                        imagensProjetos
+
+
+
+                    )
+
+
+
+                );
+
+
+
+
+
+
+
+
+
+
+
+                indiceArrastado =
+
+
+
+                    null;
+
+
+
+
+
+
+
+
+
+
+
+                destinoAtual =
+
+
+
+                    null;
+
+
+
+
+
+
+
+
+
+
+
+                mostrarImagens();
+
+
+
+
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            =================================
+
+
+
+            ABRIR JANELA DE PROJETOS
+
+
+
+            =================================
+
+
+
+        */
+
+
+
+        function abrirJanelaProjetos() {
+
+
+
+            listaProjetos.innerHTML = "";
+
+
+
+            tituloJanelaProjetos.textContent =
+
+
+
+                tipoAcao === "salvar"
+
+
+
+                    ? "Salvar em qual projeto?"
+
+
+
+                    : "Mover para qual projeto?";
+
+
+
+
+
+
+
+
+
+
+
+            projetos.forEach(
+
+
+
+                function(projetoDestino) {
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+
+
+
+                        No modo Mover, não mostra
+
+
+
+                        o projeto atual.
+
+
+
+                    */
+
+
+
+                    if (
+
+
+
+                        tipoAcao === "mover" &&
+
+
+
+                        projetoDestino.id === idProjeto
+
+
+
+                    ) {
+
+
+
+                        return;
+
+
+
+                    }
+
+
+
+
+
+
+
+
+
+
+
+                    const botaoProjeto =
+
+
+
+                        document.createElement(
+
+
+
+                            "button"
+
+
+
+                        );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoProjeto.textContent =
+
+
+
+                        "📁 " +
+
+
+
+                        projetoDestino.nome;
+
+
+
+
+
+
+
+
+
+
+
+                    botaoProjeto.classList.add(
+
+
+
+                        "item-projeto"
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    botaoProjeto.addEventListener(
+
+
+
+                        "click",
+
+
+
+                        function(evento) {
+
+
+
+
+
+
+
+                            evento.stopPropagation();
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                Garante que o projeto
+
+
+
+                                de destino tenha uma
+
+
+
+                                lista de imagens.
+
+
+
+                            */
+
+
+
+                            if (
+
+
+
+                                !imagensProjetos[
+
+
+
+                                    projetoDestino.id
+
+
+
+                                ]
+
+
+
+                            ) {
+
+
+
+                                imagensProjetos[
+
+
+
+                                    projetoDestino.id
+
+
+
+                                ] = [];
+
+
+
+                            }
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                SALVAR
+
+
+
+                                Copia a imagem para
+
+
+
+                                o outro projeto.
+
+
+
+                                A imagem continua
+
+
+
+                                no projeto atual.
+
+
+
+                            */
+
+
+
+                            if (
+
+
+
+                                tipoAcao === "salvar"
+
+
+
+                            ) {
+
+
+
+                                imagensProjetos[
+
+
+
+                                    projetoDestino.id
+
+
+
+                                ].push(
+
+
+
+                                    imagemSelecionada
+
+
+
+                                );
+
+
+
+                            }
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                MOVER
+
+
+
+                                Copia a imagem para
+
+
+
+                                o projeto de destino
+
+
+
+                                e depois remove do
+
+
+
+                                projeto atual.
+
+
+
+                            */
+
+
+
+                            else if (
+
+
+
+                                tipoAcao === "mover"
+
+
+
+                            ) {
+
+
+
+                                imagensProjetos[
+
+
+
+                                    projetoDestino.id
+
+
+
+                                ].push(
+
+
+
+                                    imagemSelecionada
+
+
+
+                                );
+
+
+
+
+
+
+
+
+
+
+
+                                imagensProjetos[
+
+
+
+                                    idProjeto
+
+
+
+                                ].splice(
+
+
+
+                                    indiceImagemSelecionada,
+
+
+
+                                    1
+
+
+
+                                );
+
+
+
+
+
+
+
+
+
+
+
+                                /*
+
+
+
+                                    Se a imagem movida
+
+
+
+                                    era a capa do projeto
+
+
+
+                                    atual, remove a capa.
+
+
+
+                                */
+
+
+
+                                if (
+
+
+
+                                    projeto.capa ===
+
+
+
+                                    imagemSelecionada
+
+
+
+                                ) {
+
+
+
+                                    projeto.capa =
+
+
+
+                                        null;
+
+
+
+                                }
+
+
+
+                            }
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                Salva os projetos.
+
+
+
+                            */
+
+
+
+                            localStorage.setItem(
+
+
+
+                                "projetos",
+
+
+
+                                JSON.stringify(
+
+
+
+                                    projetos
+
+
+
+                                )
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                Salva as imagens.
+
+
+
+                            */
+
+
+
+                            localStorage.setItem(
+
+
+
+                                "imagensProjetos",
+
+
+
+                                JSON.stringify(
+
+
+
+                                    imagensProjetos
+
+
+
+                                )
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                Limpa a seleção.
+
+
+
+                            */
+
+
+
+                            imagemSelecionada =
+
+
+
+                                null;
+
+
+
+                            indiceImagemSelecionada =
+
+
+
+                                null;
+
+
+
+                            tipoAcao =
+
+
+
+                                null;
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                Fecha a janela.
+
+
+
+                            */
+
+
+
+                            janelaProjetos.classList.remove(
+
+
+
+                                "aberta"
+
+
+
+                            );
+
+
+
+
+
+
+
+
+
+
+
+                            /*
+
+
+
+                                Atualiza a galeria.
+
+
+
+                            */
+
+
+
+                            mostrarImagens();
+
+
+
+                        }
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                    listaProjetos.appendChild(
+
+
+
+                        botaoProjeto
+
+
+
+                    );
+
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+
+
+            janelaProjetos.classList.add(
+
+
+
+                "aberta"
+
+
+
+            );
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            =================================
+
+
+
+            FECHAR JANELA DE PROJETOS
+
+
+
+            =================================
+
+
+
+        */
+
+
+
+        fecharProjetos.addEventListener(
+
+
+
+            "click",
+
+
+
+            function() {
+
+
+
+                janelaProjetos.classList.remove(
+
+
+
+                    "aberta"
+
+
+
+                );
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            Fecha a janela quando clicar
+
+
+
+            fora da caixa.
+
+
+
+        */
+
+
+
+        janelaProjetos.addEventListener(
+
+
+
+            "click",
+
+
+
+            function(evento) {
+
+
+
+                if (
+
+
+
+                    evento.target === janelaProjetos
+
+
+
+                ) {
+
+
+
+                    janelaProjetos.classList.remove(
+
+
+
+                        "aberta"
+
+
+
+                    );
+
+
+
+                }
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            =================================
+
+
+
+            ADICIONAR IMAGEM
+
+
+
+            =================================
+
+
+
+        */
+
+
+
+        botaoAdicionar.addEventListener(
+
+
+
+            "click",
+
+
+
+            function() {
+
+
+
+                seletorImagem.click();
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        seletorImagem.addEventListener(
+
+
+
+            "change",
+
+
+
+            function() {
+
+
+
+
+
+                const arquivo =
+
+
+
+                    seletorImagem.files[0];
+
+
+
+
+
+                if (!arquivo) {
+
+
+
+                    return;
+
+
+
+                }
+
+
+
+
+
+                const leitor =
+
+
+
+                    new FileReader();
+
+
+
+
+
+                leitor.onload =
+
+
+
+                    function(evento) {
+
+
+
+
+
+                        imagensProjetos[
+
+
+
+                            idProjeto
+
+
+
+                        ].push(
+
+
+
+                            evento.target.result
+
+
+
+                        );
+
+
+
+
+
+                        localStorage.setItem(
+
+
+
+                            "imagensProjetos",
+
+
+
+                            JSON.stringify(
+
+
+
+                                imagensProjetos
+
+
+
+                            )
+
+
+
+                        );
+
+
+
+
+
+                        mostrarImagens();
+
+
+
+
+
+                    };
+
+
+
+
+
+                leitor.readAsDataURL(
+
+
+
+                    arquivo
+
+
+
+                );
+
+
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            =================================
+
+
+
+            FECHAR IMAGEM AMPLIADA
+
+
+
+            =================================
+
+
+
+        */
+
+
+
+        fecharImagem.addEventListener(
+
+
+
+            "click",
+
+
+
+            function() {
+
+
+
+                janelaImagem.classList.remove(
+
+
+
+                    "aberta"
+
+
+
+                );
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            Fecha a imagem ampliada quando
+
+
+
+            clicar fora dela.
+
+
+
+        */
+
+
+
+        janelaImagem.addEventListener(
+
+
+
+            "click",
+
+
+
+            function(evento) {
+
+
+
+
+
+                if (
+
+
+
+                    evento.target === janelaImagem
+
+
+
+                ) {
+
+
+
+                    janelaImagem.classList.remove(
+
+
+
+                        "aberta"
+
+
+
+                    );
+
+
+
+                }
+
+
+
+
+
+            }
+
+
+
+        );
+
+
+
+
+
+
+
+
+
+
+
+        /*
+
+
+
+            =================================
+
+
+
+            MOSTRAR IMAGENS
+
+
+
+            =================================
+
+
+
+        */
+
+
+
+        mostrarImagens();
+
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+</html>

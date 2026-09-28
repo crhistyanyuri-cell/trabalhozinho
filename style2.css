@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scale: 300%;
+}
+.contas {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.header-login {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 30px 38px;
+}
+
+.header-contas {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 30px 38px;
+}
